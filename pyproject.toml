@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "Code for exercises from the Reinforcement Learing book by Sutton and Barto."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.4",
+]
