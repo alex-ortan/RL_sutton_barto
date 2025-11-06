@@ -6,17 +6,24 @@ Rng = np.random.default_rng(seed=42)
 
 
 class Bandit:
-    """
-    k-armed bandit, where the rewards from each arm are normally distributed, with random means and variance 1.
-    The mean rewards for each arm themselves are drawn from a normal distribution with mean 0 and variance 1.
-
-    """
     def __init__(self, 
                  k, 
                  q_true_mean = 0, 
                  q_true_var = 1, 
                  q_var = 1,
                  drift_var = 0.0):
+        """
+        k-armed bandit, where the rewards from each arm are normally distributed, with random means and variance 1.
+        The mean rewards for each arm themselves are drawn from a normal distribution with mean 0 and variance 1.
+    
+        Args:
+            k: number of arms in the bandit
+            q_true_mean: mean of the q_true values for each of the k arms
+            q_true_var: variance of the q_true values each of the k arms
+            q_var: variance of the sampled rewards; their mean is q_true
+            drift_var: if the bandit is non stationary, the q_true values take a random walk with variance drift_var and mean 0 at every step
+
+        """
 
         self._k = k
         self._drift_var = drift_var
