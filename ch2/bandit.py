@@ -13,16 +13,29 @@ class Bandit:
     """
     def __init__(self, 
                  k, 
-                 action_values_mean = 0, 
-                 action_values_var = 1, 
-                 reward_var = 1):
+                 q_true_mean = 0, 
+                 q_true_var = 1, 
+                 q_var = 1,
+                 drift_var = 0.0):
 
-        self._vals = Rng.normal(action_values_mean, action_values_var, k)
-        self._vars = [reward_var]*k
-        self._best_action = np.argmax(self._vals)
+        self._k = k
+        self._drift_var = drift_var
+
+        self._q_true = Rng.normal(q_true_mean, q_true_var, k)
+        self._q_var = [q_var]*k
+        self._best_action = np.argmax(self._q_true)
+
+
+    def sample(self, action, n = 1):
+        
+        return Rng.normal(self._q_true[action], self._q_var[action], n)
 
 
     def reward(self, action):
-        
-        return Rng.normal(self._vals[action], self._vars[action])
 
+        r = self.sample(action).item()
+
+        # Add non-stationarity through a random walk of the true q values
+        self._q_true += Rng.normal(0, self._drift_var, self._k)
+
+        return r
