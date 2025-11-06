@@ -19,18 +19,10 @@ class Bandit:
 
         self._vals = Rng.normal(action_values_mean, action_values_var, k)
         self._vars = [reward_var]*k
+        self._best_action = np.argmax(self._vals)
 
 
     def reward(self, action):
         
         return Rng.normal(self._vals[action], self._vars[action])
 
-
-
-if __name__ == '__main__':
-    # Generate different k-armed bandit problems with different reward distributions
-    k = 10
-    bandits = []
-
-    for n in range(0, 2000):
-        bandits.append(Bandit(k))
