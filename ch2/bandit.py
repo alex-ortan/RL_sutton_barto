@@ -6,6 +6,10 @@ Rng = np.random.default_rng(seed=42)
 
 
 class Bandit:
+    """
+    Defines the bandit environment
+    """
+
     def __init__(self, 
                  k, 
                  q_true_mean = 0, 
@@ -34,11 +38,19 @@ class Bandit:
 
 
     def sample(self, action, n = 1):
+        """
+        Provides a way to sample multiple reward values from the bandit distribution at a given point in time.
+        This is useful in non-stationary scenarios where calling self.reward() also changes the distribution.
+        """
         
         return Rng.normal(self._q_true[action], self._q_var[action], n)
 
 
     def reward(self, action):
+        """
+        Takes the given action and returns the reward value.
+        Updates the q_true values if self._drift_var is non-zero.
+        """
 
         r = self.sample(action).item()
 
