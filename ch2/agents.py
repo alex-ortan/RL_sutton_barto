@@ -1,29 +1,37 @@
 import numpy as np
 
-from typing import Callable
+from estimators import SampleAverageEstimator, ConstantStepSizeEstimator
 
 
-def bandit_av_method_run(bandit, k, T, epsilon, step_size: Callable[[int], float] = lambda x: 1/x):
-     """
-     Run the epsilon-greedy algorithm on a particular k-armed bandit for T time steps.
+def bandit_epsilon_greedy_run(bandit, k, T, epsilon, estimator_name, step_size = None):
+    """ 
+    Run the epsilon-greedy algorithm on a particular k-armed bandit for T time steps.
 
-     Args:
+    Args:
         bandit: bandit reward function; bandit(a) returns a real number for every possible action a.
         k: number of arms in the bandit
         T: number of time steps played
         epsilon: probability with which an exploratory action is taken
-        step_size: function of n that determines the size of the update step (alpha in equation 2.5 on page 32)
-                   by default the step size used is 1/n, leading to a sample average method
+        estimator_name: name of the method used for estimating q values. "SampleAverage" or "ConstantStepSize"
+        step_size: the size of the step for the ConstantStepSize estimator
     """
 
-    n = np.zeros(k)              # number of times each action was taken (k,)
+    if estimator_name == "SampleAverage":
+        estimator = SampleAverageEstimator(k)
+    elif estimator_name == "ConstantStepSize":
+        if step_size:
+            estimator = ConstantStepSizeEstimator(k, step_size)
+        else:
+            estimator = ConstantStepSizeEstimator(k)
+    else:
+       raise ValueError('Only estimators "SampleAverage" or ConstantStepSize" are supported.')
+
     actions = []                 # sequence of actions taken (T,)
     rewards = []                 # sequence of rewards received (T,)
-    q_estimates = np.zeros(k)    # values estimates for each action at every step (k,)
     
     for t in range(0,T):
         # Determine greedy action, randomly breaking ties randomly
-        greedy_actions = np.flatnonzero(q_estimates == q_estimates.max())
+        greedy_actions = np.flatnonzero(estimator.q == estimator.q.max())
         greedy_action = np.random.choice(greedy_actions)
         
         # Determine exploratory action randomly
@@ -39,7 +47,6 @@ def bandit_av_method_run(bandit, k, T, epsilon, step_size: Callable[[int], float
         rewards.append(r)
         
         # Update value estimates
-        n[a] += 1
-        q_estimates[a] += step_size(n[a])*(r - q_estimates[a])
-    
+        estimator.update(a, r)
+
     return rewards, actions

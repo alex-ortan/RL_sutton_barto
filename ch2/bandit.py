@@ -29,7 +29,7 @@ class Bandit:
 
         """
 
-        self._k = k
+        self.k = k
         self._drift_var = drift_var
 
         self._q_true = Rng.normal(q_true_mean, q_true_var, k)
@@ -55,6 +55,6 @@ class Bandit:
         r = self.sample(action).item()
 
         # Add non-stationarity through a random walk of the true q values
-        self._q_true += Rng.normal(0, self._drift_var, self._k)
+        self._q_true += Rng.normal(0, self._drift_var, self.k)
 
         return r
