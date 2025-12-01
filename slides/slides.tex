@@ -1,0 +1,36 @@
+\documentclass{beamer}
+\usepackage[mathcal]{euscript}
+
+\usetheme{moloch}
+
+\title{Reinforcement Learning - Sutton and Barto}
+\subtitle{Book Club Highlights}
+\author{Alexandra Ortan}
+\date{\today}
+
+
+\begin{document}
+    \maketitle
+    \section{Chapter 3\\Markov Decision Processes}
+
+    \begin{frame}{Agent-Environment Interface}
+        \begin{center}
+            \includegraphics[height=0.3\textheight]{figures/fig3-1.png}
+        \end{center}
+
+        \begin{description}
+            \item[agent]
+                learner and decision maker
+            \item[environment]
+                everything outside the agent
+            \item[$S_t \in \mathcal{S}$]
+                state of the environment at time $t$
+            \item[$A_t \in \mathcal{A}(s)$]
+                action at time $t$
+            \item[$R_t \in \mathcal{R} \subset \mathbb{R}$]
+                reward received as a consequence of action $A_{t-1}$
+        \end{description}
+
+    \end{frame}
+
+\end{document}
