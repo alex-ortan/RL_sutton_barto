@@ -1,7 +1,18 @@
 \documentclass{beamer}
-\usepackage[mathcal]{euscript}
-
 \usetheme{moloch}
+\usefonttheme[onlymath]{serif}
+
+\usepackage[mathcal]{euscript}
+\usefonttheme[onlymath]{serif}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{backgrounds}
+
+
+
+
 
 \title{Reinforcement Learning - Sutton and Barto}
 \subtitle{Book Club Highlights}
@@ -11,7 +22,7 @@
 
 \begin{document}
     \maketitle
-    \section{Chapter 3\\Markov Decision Processes}
+    \section{Chapter 3\\Finite Markov Decision Processes}
 
     \begin{frame}{Agent-Environment Interface}
         \begin{center}
@@ -30,7 +41,56 @@
             \item[$R_t \in \mathcal{R} \subset \mathbb{R}$]
                 reward received as a consequence of action $A_{t-1}$
         \end{description}
-
     \end{frame}
+
+    \begin{frame}{Markov Decision Processes (MDP)}
+        \begin{block}{Markov Property}
+            The probability of each possible value for $S_t$ and $R_t$ is completely determined by 
+            the preceding state and action $S_{t-1}$ and $A_{t-1}$.
+        \end{block}
+        \begin{block}{Dynamics Function}
+            The function $p : \mathcal{S} \times \mathcal{R} \times \mathcal{S} \times \mathcal{A} \mapsto [0,1]$ is defined as 
+            \begin{equation*}
+                p(s', r \mid s, a) \doteq Pr\{S_t = s', R_t = r \mid S_{t-1} = s, A_{t-1} = a\}
+            \end{equation*}
+            and completely defines the dynamics of the MDP. 
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{Policies and Value Functions}
+        \begin{block}{Policy}
+            Mapping from states to probability of selecting each possible action.
+            \begin{description}
+                \item[$\pi$] : $\mathcal{S} \mapsto \{\text{probabilities over } \mathcal{A}(s) \}$
+            \end{description}
+        \end{block}
+        \centering
+        \include{fig3-backup-diagram.tex}
+    \end{frame}
+
+    \begin{frame}{Policies and Value Functions}
+        \begin{block}{State-value function}
+            Expected return when starting in a given state $s$ and following a policy $\pi$ thereafter.
+            \begin{equation}
+                v_{\pi} = \mathbb{E}[G_t \mid S_t = s ]
+            \end{equation}
+        \end{block}
+        \begin{center}
+            \includegraphics[width=\textwidth]{figures/backup.png}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}{Policies and Value Functions}
+        \begin{block}[Bellman Equation]
+
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{Optimal Policies and Optimal Value Functions}
+        \begin{block}[Policy]
+
+        \end{block}
+    \end{frame}
+
 
 \end{document}
