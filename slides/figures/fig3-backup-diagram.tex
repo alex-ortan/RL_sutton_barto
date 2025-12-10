@@ -1,0 +1,90 @@
+\begin{tikzpicture}[
+        background rectangle/.style={fill=white}, show background rectangle,
+        font=\small,
+        state/.style={circle, draw, semithick, minimum size=0.3cm, inner sep=0pt},
+        action/.style={circle, fill=black, minimum size=0.2cm, inner sep=0pt}
+    ]
+    \useasboundingbox (-6,-3) rectangle (5,0.5);
+
+    % Visual guides
+    %\draw[red] (current bounding box.south west) rectangle (current bounding box.north east);
+    %\draw [help lines] (current bounding box.south west) grid (current bounding box.north east);
+
+    % State node
+    \node[state, label=above:$s$] (s) at (0,0) {};
+
+    \onslide<1>{
+        % Action nodes
+        \node[action, label=below:$a_1$] (a1) at (-1.3,-1) {};
+        \node[action, label=below:$a_2$] (a2) at (0,-1) {};
+        \node[action, label=below:$a_3$] (a3) at (1.3,-1) {};
+    }
+
+    \onslide<2->{
+        % Action nodes
+        \node[action, label=left:$a_1$] (a1) at (-1.3,-1) {};
+        \node[action, label=right:$a_2$] (a2) at (0,-1) {};
+        \node[action, label=right:$a_3$] (a3) at (1.3,-1) {};
+    }
+
+    % Arrows from s to actions
+    \draw[-{Stealth}, semithick] (s) -- (a1);
+    \draw[-{Stealth}, semithick] (s) -- (a2);
+    \draw[-{Stealth}, semithick] (s) -- (a3);
+
+    % Label for policy
+    \coordinate (x) at (-2.3,0);
+    \node[left, align=right] at ($(x)$) {
+        taken with \\ probability $\pi(a \mid s)$
+    };
+    \node (y) at ($ (s)!.4!(a1) $) {};
+    \draw[-{Stealth}] (x) to[out=0, in=180, looseness=3] (y);
+
+    \onslide<2->{
+        % Next state nodes
+        \node[state, label=below:$s'_1$] (s1) at (-1.6,-2.3) {};
+        \node[state, label=below:$s'_2$] (s2) at (-1.0,-2.3) {};
+        \node[state, label=below:$s'_3$] (s3) at (-0.3,-2.3) {};
+        \node[state, label=below:$s'_4$] (s4) at (0.3,-2.3) {};
+        \node[state, label=below:$s'_5$] (s5) at (1.0,-2.3) {};
+        \node[state, label=below:$s'_6$] (s6) at (1.6,-2.3) {};
+
+        % Arrows from actions to next states
+        \draw[-{Stealth}, semithick] (a1) -- (s1);
+        \draw[-{Stealth}, semithick] (a1) -- (s2);
+        \draw[-{Stealth}, semithick] (a2) -- (s3);
+        \draw[-{Stealth}, semithick] (a2) -- (s4);
+        \draw[-{Stealth}, semithick] (a3) -- (s5);
+        \draw[-{Stealth}, semithick] (a3) -- (s6);
+    }
+
+    \onslide<3->{
+        % Label for expected rewards
+        \coordinate (z) at (-3.3,-2);
+        \node[left]  (r1) at ($ (a1)!.4!(s1) $) {$r_1$};
+        \node[right] (r2) at ($ (a1)!.4!(s2) $) {$r_2$};
+        \node[left]  (r3) at ($ (a2)!.4!(s3) $) {$r_3$};
+        \node[right] (r4) at ($ (a2)!.4!(s4) $) {$r_4$};
+        \node[left]  (r5) at ($ (a3)!.4!(s5) $) {$r_5$};
+        \node[right] (r6) at ($ (a3)!.4!(s6) $) {$r_6$};
+        \node[left, align=right] at ($(z)$) {
+            expected rewards \\ with probability \\ $p(s', r \mid s, a)$
+        };
+        \draw[-{Stealth}] (z) to[out=0, in=180, looseness=3] (r1);
+    }
+
+    \onslide<4->{
+        % Value function arrow and label
+        \node[right] (v) at (2.5,0.3) {$v_\pi(s)$};
+        \draw[-{Stealth}] (v) to[out=180, in=0, looseness=3] ($ (s) + (0.3,0) $);
+
+    }
+
+    \onslide<5->{
+        % Q-value arrow and label
+        \node[right] (q) at (3.8,-0.7) {$q_\pi(s,a)$};
+        \draw[-{Stealth}] (q) to[out=180, in=0, looseness=3] ($ (a3) + (0.7,0) $);
+    }
+
+
+\end{tikzpicture}

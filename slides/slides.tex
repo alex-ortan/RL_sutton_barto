@@ -99,20 +99,41 @@
         \end{overlayarea}
 
         \centering
+        \include{figures/fig3-backup-diagram.tex}
+    \end{frame}
+
+
+    \begin{frame}{Policies and Value Functions}
+        \begin{block}{Bellman Equations}
+            \begin{equation*}
+                v_{\pi}(s) = \sum_{a\in\mathcal{A}(s)} \pi(a \mid s) 
+                                \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                                    p(s',r \mid s,a) 
+                                    \left[ 
+                                        r + \gamma v_{\pi}(s')
+                                    \right]
+            \end{equation*}
+        \end{block}
+
+        \centering
         \include{figures/fig3-backup-diagram-state.tex}
     \end{frame}
 
 
     \begin{frame}{Policies and Value Functions}
-        \begin{block}{Bellman Equation}
-
+        \begin{block}{Bellman Equations}
+            \begin{equation*}
+                q_{\pi}(s,a) = \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                                    p(s',r \mid s,a) 
+                                    \left[ 
+                                        r + \gamma \sum_{a'\in\mathcal{A}(s')} 
+                                                        \pi(a' \mid s') q_{\pi}(s',a') 
+                                    \right]
+            \end{equation*}
         \end{block}
-    \end{frame}
 
-    \begin{frame}{Optimal Policies and Optimal Value Functions}
-        \begin{block}[Policy]
-
-        \end{block}
+        \centering
+        \include{figures/fig3-backup-diagram-action.tex}
     \end{frame}
 
 
