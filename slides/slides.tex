@@ -105,35 +105,36 @@
 
     \begin{frame}{Policies and Value Functions}
         \begin{block}{Bellman Equations}
-            \begin{equation*}
-                v_{\pi}(s) = \sum_{a\in\mathcal{A}(s)} \pi(a \mid s) 
+            \begin{align*}
+                v_{\pi}(s) &= \sum_{a\in\mathcal{A}(s)} \pi(a \mid s) 
                                 \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
                                     p(s',r \mid s,a) 
                                     \left[ 
                                         r + \gamma v_{\pi}(s')
-                                    \right]
-            \end{equation*}
-        \end{block}
-
-        \centering
-        \include{figures/fig3-backup-diagram-state.tex}
-    \end{frame}
-
-
-    \begin{frame}{Policies and Value Functions}
-        \begin{block}{Bellman Equations}
-            \begin{equation*}
-                q_{\pi}(s,a) = \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                                    \right] \\
+                \onslide<2->{
+                q_{\pi}(s,a) &= \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
                                     p(s',r \mid s,a) 
                                     \left[ 
                                         r + \gamma \sum_{a'\in\mathcal{A}(s')} 
                                                         \pi(a' \mid s') q_{\pi}(s',a') 
                                     \right]
-            \end{equation*}
+                }
+            \end{align*}
         \end{block}
 
-        \centering
-        \include{figures/fig3-backup-diagram-action.tex}
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \include{figures/fig3-backup-diagram-state.tex}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \only<2>{
+                    \include{figures/fig3-backup-diagram-action.tex}
+                }
+            \end{column}
+        \end{columns}
     \end{frame}
 
 

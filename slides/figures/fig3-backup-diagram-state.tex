@@ -1,25 +1,25 @@
 \begin{tikzpicture}[
         background rectangle/.style={fill=white}, show background rectangle,
-        font=\small,
-        state/.style={circle, draw, semithick, minimum size=0.3cm, inner sep=0pt},
-        action/.style={circle, fill=black, minimum size=0.2cm, inner sep=0pt}
+        font=\footnotesize,
+        state/.style={circle, draw, semithick, minimum size=0.2cm, inner sep=0pt},
+        action/.style={circle, fill=black, minimum size=0.1cm, inner sep=0pt}
     ]
-    \useasboundingbox (-2,-2.5) rectangle (2.5,0.5);
+    \useasboundingbox (-1.5,-2) rectangle (2,0.5);
 
     % Visual guides
     %\draw[red] (current bounding box.south west) rectangle (current bounding box.north east);
     %\draw [help lines] (current bounding box.south west) grid (current bounding box.north east);
 
     % State value label
-    \node[above] at (2,0) {$\left(v_{\pi}\right)$};
+    \node[above] at (1.5,0) {$\left(v_{\pi}\right)$};
 
     % State node
     \node[state, label=above:$s$] (s) at (0,0) {};
 
     % Action nodes
-    \node[action] (a1) at (-1.3,-1) {};
-    \node[action] (a2) at (0,-1) {};
-    \node[action, label={above:$a$}] (a3) at (1.3,-1) {};
+    \node[action] (a1) at (-1.1,-0.75) {};
+    \node[action] (a2) at (0,-0.75) {};
+    \node[action, label={above:$a$}] (a3) at (1.1,-0.75) {};
 
     % Arrows from s to actions
     \draw[-{Stealth}, semithick] (s) -- (a1);
@@ -27,15 +27,15 @@
     \draw[-{Stealth}, semithick] (s) -- (a3);
 
     % Label for policy
-    \node[right] at ($ (s)!0.4!(a2) $) {$\pi$};
+    \node[right] at ($ (s)!0.5!(a2) $) {$\pi$};
 
     % Next state nodes
-    \node[state] (s1) at (-1.6,-2.3) {};
-    \node[state] (s2) at (-1.0,-2.3) {};
-    \node[state] (s3) at (-0.3,-2.3) {};
-    \node[state] (s4) at (0.3,-2.3) {};
-    \node[state] (s5) at (1.0,-2.3) {};
-    \node[state, label={right:$s'$}] (s6) at (1.6,-2.3) {};
+    \node[state] (s1) at (-1.35,-1.75) {};
+    \node[state] (s2) at (-0.85,-1.75) {};
+    \node[state] (s3) at (-0.25,-1.75) {};
+    \node[state] (s4) at (0.25,-1.75) {};
+    \node[state] (s5) at (0.85,-1.75) {};
+    \node[state, label={right:$s'$}] (s6) at (1.35,-1.75) {};
 
     % Arrows from actions to next states
     \draw[-{Stealth}, semithick] (a1) -- (s1);
@@ -46,7 +46,6 @@
     \draw[-{Stealth}, semithick] (a3) -- (s6);
 
     % Label for dynamics
-%    \node at ($ (a3) - (0,0.7) $) {$p$};
     \node[left] at ($ (a3)!0.5!(s5) $) {$p$};
 
     % Label for reward

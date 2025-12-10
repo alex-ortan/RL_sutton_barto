@@ -1,24 +1,24 @@
 \begin{tikzpicture}[
         background rectangle/.style={fill=white}, show background rectangle,
-        font=\small,
-        state/.style={circle, draw, semithick, minimum size=0.3cm, inner sep=0pt},
-        action/.style={circle, fill=black, minimum size=0.2cm, inner sep=0pt}
+        font=\footnotesize,
+        state/.style={circle, draw, semithick, minimum size=0.2cm, inner sep=0pt},
+        action/.style={circle, fill=black, minimum size=0.1cm, inner sep=0pt}
     ]
-    \useasboundingbox (-2,-2.5) rectangle (2.5,0.5);
+    \useasboundingbox (-1.5,-2) rectangle (2,0.5);
 
     % Visual guides
     %\draw[red] (current bounding box.south west) rectangle (current bounding box.north east);
     %\draw[help lines] (current bounding box.south west) grid (current bounding box.north east);
 
     % State value label
-    \node[above] at (2,0) {$\left(q_{\pi}\right)$};
+    \node[above] at (1.5,0) {$\left(q_{\pi}\right)$};
 
     % State-action node
     \node[action, label=above:{$s,a$}] (sa) at (0,0) {};
 
     % State nodes
-    \node[state] (s1) at (-1,-1) {};
-    \node[state, label=above:$s'$] (s2) at (1,-1) {};
+    \node[state] (s1) at (-0.8,-0.75) {};
+    \node[state, label=above:$s'$] (s2) at (0.8,-0.75) {};
 
     % Arrows from s to actions
     \draw[-{Stealth}, semithick] (sa) -- (s1);
@@ -31,12 +31,12 @@
     \node[right] at ($ (sa)!0.4!(s2) $) {$r$};
 
     % Next action nodes
-    \node[action] (a1) at (-1.6,-2.3) {};
-    \node[action] (a2) at (-1.0,-2.3) {};
-    \node[action] (a3) at (-0.3,-2.3) {};
-    \node[action] (a4) at (0.3,-2.3) {};
-    \node[action] (a5) at (1.0,-2.3) {};
-    \node[action, label={right:$a'$}] (a6) at (1.6,-2.3) {};
+    \node[action] (a1) at (-1.3,-1.75) {};
+    \node[action] (a2) at (-0.8,-1.75) {};
+    \node[action] (a3) at (-0.3,-1.75) {};
+    \node[action] (a4) at (0.3,-1.75) {};
+    \node[action] (a5) at (0.8,-1.75) {};
+    \node[action, label={right:$a'$}] (a6) at (1.3,-1.75) {};
 
     % Arrows from actions to next states
     \draw[-{Stealth}, semithick] (s1) -- (a1);
