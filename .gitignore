@@ -1,2 +1,10 @@
 *.ipynb_checkpoints
 *__pycache__
+
+# LaTeX
+*.aux
+*.toc
+*.snm
+*.out
+*.nav
+*.log
