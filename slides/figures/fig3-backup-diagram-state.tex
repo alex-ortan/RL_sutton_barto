@@ -73,4 +73,18 @@
         \draw[-{Stealth}] (z) to[out=0, in=180, looseness=3] (r1);
     }
 
+    \onslide<4->{
+        % Value function arrow and label
+        \node[right] (v) at (2.5,0.3) {$v_\pi(s)$};
+        \draw[-{Stealth}] (v) to[out=180, in=0, looseness=3] ($ (s) + (0.3,0) $);
+
+    }
+
+    \onslide<5->{
+        % Q-value arrow and label
+        \node[right] (q) at (3.8,-0.7) {$q_\pi(s,a)$};
+        \draw[-{Stealth}] (q) to[out=180, in=0, looseness=3] ($ (a3) + (0.7,0) $);
+    }
+
+
 \end{tikzpicture}
