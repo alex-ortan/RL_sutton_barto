@@ -5,6 +5,13 @@
 \usepackage[mathcal]{euscript}
 \usefonttheme[onlymath]{serif}
 
+% Add \strut to block titles so they are always the same height regardless of contents
+\addtobeamertemplate{block begin}{%
+    \let\oldinsertblocktitle\insertblocktitle%
+    \def\insertblocktitle{\strut\oldinsertblocktitle}%
+}{}
+
+
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
@@ -20,9 +27,11 @@
 \date{\today}
 
 
+
 \begin{document}
     \maketitle
     \section{Chapter 3\\Finite Markov Decision Processes}
+
 
     \begin{frame}{Agent-Environment Interface}
         \begin{center}
@@ -43,6 +52,7 @@
         \end{description}
     \end{frame}
 
+
     \begin{frame}{Markov Decision Processes (MDP)}
         \begin{block}{Markov Property}
             The probability of each possible value for $S_t$ and $R_t$ is completely determined by 
@@ -57,28 +67,38 @@
         \end{block}
     \end{frame}
 
+
     \begin{frame}{Policies and Value Functions}
         \begin{block}{Policy}
             Mapping from states to probability of selecting each possible action.
             \begin{description}
-                \item[$\pi$] : $\mathcal{S} \mapsto \{\text{probabilities over } \mathcal{A}(s) \}$
+                \item[$\pi :$] $\mathcal{S} \mapsto \{\text{probabilities over } \mathcal{A}(s) \}$
             \end{description}
         \end{block}
         \centering
-        \include{fig3-backup-diagram.tex}
+        \include{figures/fig3-backup-diagram-state.tex}
     \end{frame}
 
+    
     \begin{frame}{Policies and Value Functions}
-        \begin{block}{State-value function}
+        \begin{block}{State value function}
             Expected return when starting in a given state $s$ and following a policy $\pi$ thereafter.
-            \begin{equation}
-                v_{\pi} = \mathbb{E}[G_t \mid S_t = s ]
-            \end{equation}
+            \begin{equation*}
+                v_{\pi}(s) = \mathbb{E}_{\pi}[G_t \mid S_t = s ]
+            \end{equation*}
         \end{block}
-        \begin{center}
-            \includegraphics[width=\textwidth]{figures/backup.png}
-        \end{center}
     \end{frame}
+
+
+    \begin{frame}{Policies and Value Functions}
+        \begin{block}{Action value function}
+            Expected return when starting in a given state $s$ and following a policy $\pi$ thereafter.
+            \begin{equation*}
+                q_{\pi}(s, a) = \mathbb{E}[G_t \mid S_t = s ]
+            \end{equation*}
+        \end{block}
+    \end{frame}
+
 
     \begin{frame}{Policies and Value Functions}
         \begin{block}[Bellman Equation]
