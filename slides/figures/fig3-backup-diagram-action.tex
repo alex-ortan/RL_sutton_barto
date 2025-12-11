@@ -11,7 +11,12 @@
     %\draw[help lines] (current bounding box.south west) grid (current bounding box.north east);
 
     % State value label
+    \only<1-5>{
     \node[above] at (1.5,0) {$\left(q_{\pi}\right)$};
+    }
+    \only<6->{
+    \node[above, red] at (1.5,0) {$\left(q_*\right)$};
+    }
 
     % State-action node
     \node[action, label=above:{$s,a$}] (sa) at (0,0) {};
@@ -47,6 +52,16 @@
     \draw[-{Stealth}, semithick] (s2) -- (a6);
 
     % Label for policy
-    \node[left] at ($ (s2)!0.5!(a4) $) {$\pi$};
+    \only<1-4>{
+    \node[left] at ($ (s2)!0.5!(a4) $) {\textcolor<3->{red}{$\pi$}};
+    }
+    
+    % Label for max over actions
+    % The angles are defined by a1--s1--a3 and a4--s2--a6
+    \only<5->{
+    \pic [draw, red, angle radius=0.3cm] {angle = a1--s1--a3};
+    \pic [draw, red, angle radius=0.3cm] {angle = a4--s2--a6};
+    \node[above left] at ($ (s1)!0.3!(a1) $) {\textcolor{red}{$max$}};
+    }
 
 \end{tikzpicture}

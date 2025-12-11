@@ -11,7 +11,12 @@
     %\draw [help lines] (current bounding box.south west) grid (current bounding box.north east);
 
     % State value label
+    \only<1-5>{
     \node[above] at (1.5,0) {$\left(v_{\pi}\right)$};
+    }
+    \only<6->{
+    \node[above, red] at (1.5,0) {$\left(v_*\right)$};
+    }
 
     % State node
     \node[state, label=above:$s$] (s) at (0,0) {};
@@ -27,7 +32,16 @@
     \draw[-{Stealth}, semithick] (s) -- (a3);
 
     % Label for policy
-    \node[right] at ($ (s)!0.5!(a2) $) {$\pi$};
+    \only<1-4>{
+    \node[right] at ($ (s)!0.5!(a2) $) {\textcolor<3->{red}{$\pi$}};
+    }
+    % The angle is defined by a1--s--a3
+    %\draw (a1) -- (s) -- (a3);
+    \only<5->{
+    \pic [draw, red, angle radius=0.3cm] {angle = a1--s--a3};
+    \node[above left] at ($ (s)!0.3!(a1) $) {\textcolor{red}{$max$}};
+    }
+
 
     % Next state nodes
     \node[state] (s1) at (-1.35,-1.75) {};

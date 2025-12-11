@@ -1,6 +1,7 @@
 \documentclass{beamer}
 \usetheme{moloch}
-\usefonttheme[onlymath]{serif}
+\usepackage{amsmath}
+\usepackage{cancel, mathtools}
 
 \usepackage[mathcal]{euscript}
 \usefonttheme[onlymath]{serif}
@@ -11,11 +12,20 @@
     \def\insertblocktitle{\strut\oldinsertblocktitle}%
 }{}
 
+% Beamer-ize cancelto command
+\makeatletter
+\let\my@cancelto\cancelto %copy over the original cancelto command
+\newcommand<>{\cancelto}[2]{\alt#3{\my@cancelto{#1}{#2}}{\mathrlap{#2}\phantom{\my@cancelto{#1}{#2}}}}
+% redefine the cancelto command, using \phantom to assure that the
+% result doesn't wiggle up and down with and without the arrow
+\makeatother
+
 
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{calc}
 \usetikzlibrary{backgrounds}
+\usetikzlibrary{angles, quotes}
 
 
 
@@ -78,7 +88,7 @@
                 \end{equation*}
             \end{block}
         }
-        \only<4>{
+        \only<4-5>{
             \begin{block}{State value function}
                 Expected return when starting in a given state $s$ and 
                 following policy $\pi$ thereafter.
@@ -87,7 +97,7 @@
                 \end{equation*}
             \end{block}
         }
-        \only<5>{
+        \only<6-7>{
             \begin{block}{Action value function}
                 Expected return when starting in a given state $s$, taking an action $a$, 
                 then following policy $\pi$ thereafter.
@@ -136,6 +146,119 @@
             \end{column}
         \end{columns}
     \end{frame}
+
+
+    \begin{frame}{Optimal Policies and Optimal Value Functions}
+        \begin{block}{Optimal Policy}
+            $\pi_*$ is said to be optimal if its expected return is greater than or equal 
+            to that of all other policies for all states:
+            \begin{equation*}
+                v_{\pi_*}(s) \geq v_{\pi'}(s) 
+                           \qquad \forall s \in \mathcal{S}, \forall \text{ policies } \pi'
+            \end{equation*}
+        \end{block}
+
+        \begin{block}{Optimal Value Functions}
+            Value functions associated with optimal policies:
+            \begin{alignat*}{3}
+                v_*(s) 
+                    &= v_{\pi_*}(s) 
+                    && = \max_{\pi} v_{\pi}(s) 
+                        && \qquad \forall s \in \mathcal{S}
+                \\
+                q_*(s,a) 
+                    &= q_{\pi_*}(s,a) 
+                    && = \max_{\pi} q_{\pi}(s,a) 
+                        && \qquad \forall a \in \mathcal{A}(s), \forall s \in \mathcal{S} 
+            \end{alignat*}
+        \end{block}
+    \end{frame}
+
+
+    \begin{frame}{Optimal Policies and Optimal Value Functions}
+        \begin{block}{Bellman Equations}
+            \begin{align*}
+                v_{\pi}(s) &= 
+                    \cancelto<4->{\textcolor{red}{\max_a}}{
+                        \textcolor<2->{red}{
+                            \sum_{a\in\mathcal{A}(s)} \pi(a \mid s)
+                        }
+                    } 
+                    \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                    p(s',r \mid s,a) 
+                    \left[ 
+                        r + \gamma v_{\pi}(s')
+                    \right] 
+                \\
+                q_{\pi}(s,a) &= 
+                    \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                    p(s',r \mid s,a) 
+                    \left[ 
+                        r + \gamma 
+                        \cancelto<4->{\textcolor{red}{\max_a}}{
+                            \textcolor<2->{red}{
+                                \sum_{a'\in\mathcal{A}(s')} \pi(a' \mid s')
+                            }
+                        } 
+                        q_{\pi}(s',a') 
+                    \right]
+            \end{align*}
+        \end{block}
+
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \include{figures/fig3-backup-diagram-state.tex}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \include{figures/fig3-backup-diagram-action.tex}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+
+    \begin{frame}<6->{Optimal Policies and Optimal Value Functions}
+        \begin{block}{Bellman Optimality Equations}
+
+            \begin{align*}
+                v_{\textcolor{red}{*}}(s) &= 
+                    \textcolor<2->{red}{
+                        \max_{a\in\mathcal{A}(s)}
+                    }
+                    \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                    p(s',r \mid s,a) 
+                    \left[ 
+                        r + \gamma v_{\textcolor{red}{*}}(s')
+                    \right] 
+                \\
+                q_{\textcolor{red}{*}}(s,a) &= 
+                    \sum_{s'\in\mathcal{S}} \sum_{r\in\mathcal{R}} 
+                    p(s',r \mid s,a) 
+                    \left[ 
+                        r + \gamma 
+                        \textcolor{red}{
+                            \max_{a'\in\mathcal{A}(s')}
+                        }
+                        q_{\textcolor{red}{*}}(s',a') 
+                    \right]
+            \end{align*}
+        \end{block}
+
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \include{figures/fig3-backup-diagram-state.tex}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \centering
+                \include{figures/fig3-backup-diagram-action.tex}
+            \end{column}
+        \end{columns}
+    \end{frame}
+
+
+    \section{Chapter 4\\Dynamic Programming}
 
 
 \end{document}
