@@ -3,7 +3,45 @@ import numpy as np
 from estimators import SampleAverageEstimator, ConstantStepSizeEstimator
 
 
-def bandit_epsilon_greedy_run(bandit, k, T, epsilon, estimator_name, step_size = None):
+class EpsilonGreedyAgent:
+    """
+    Implements the epsilon-greedy algorithm for k-armed bandits.
+    """
+
+    def __init__(self, k_arms=10, epsilon=0.1, estimator=None):
+        """
+        Initializes the agent.
+        
+        Args:
+            k_arms: number of arms in the bandit
+            epsilon: Probability of exploration (0 <= epsilon <= 1).
+            estimator: Initialized estimator class used to estimate values (e.g., SampleAverageEstimator).
+        """
+
+        self.k = k_arms
+        self.epsilon = epsilon
+
+        # Initialize the estimator object
+        self.estimator = estimator
+
+    def select_action(self):
+        """
+        Chooses an action based on the epsilon-greedy strategy.
+        It uses the Q values stored in the estimator.
+        """
+
+        if np.random.rand() < self.epsilon:
+            # Explore: Choose a random action
+            action = np.random.randint(self.k)
+        else:
+            # Exploit: Choose a greedy action based on current q values, breaking ties randomly
+            actions = np.flatnonzero(self.estimator.q == self.estimator.q.max())
+            action = np.random.choice(actions)
+            
+        return action
+
+
+def bandit_epsilon_greedy_run(bandit, k, T, epsilon, estimator_class, step_size = None):
     """ 
     Run the epsilon-greedy algorithm on a particular k-armed bandit for T time steps.
 
@@ -16,30 +54,19 @@ def bandit_epsilon_greedy_run(bandit, k, T, epsilon, estimator_name, step_size =
         step_size: the size of the step for the ConstantStepSize estimator
     """
 
-    if estimator_name == "SampleAverage":
-        estimator = SampleAverageEstimator(k)
-    elif estimator_name == "ConstantStepSize":
-        if step_size:
-            estimator = ConstantStepSizeEstimator(k, step_size)
-        else:
-            estimator = ConstantStepSizeEstimator(k)
+    # Initialize estimator and agent
+    if step_size:
+        estimator = estimator_class(k, step_size)
     else:
-       raise ValueError('Only estimators "SampleAverage" or ConstantStepSize" are supported.')
+        estimator = estimator_class(k)
+    agent = EpsilonGreedyAgent(k, epsilon, estimator)
 
     actions = []                 # sequence of actions taken (T,)
     rewards = []                 # sequence of rewards received (T,)
     
     for t in range(0,T):
-        # Determine greedy action, randomly breaking ties randomly
-        greedy_actions = np.flatnonzero(estimator.q == estimator.q.max())
-        greedy_action = np.random.choice(greedy_actions)
-        
-        # Determine exploratory action randomly
-        exploratory_action = np.random.choice(range(0,10))
-        exploratory_action
-        
-        # Choose exploratory action with epsilon probability, and the greedy action otherwise
-        a = np.random.choice([greedy_action, exploratory_action], p=[1-epsilon, epsilon])
+        # Determine action to take
+        a = agent.select_action()
         actions.append(a)
         
         # Determine reward for the chosen action

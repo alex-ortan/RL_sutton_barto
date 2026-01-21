@@ -52,6 +52,9 @@ class Bandit:
         Updates the q_true values if self._drift_var is non-zero.
         """
 
+        if not (0 <= action < self.k):
+            raise ValueError("Invalid action selected.")
+
         r = self.sample(action).item()
 
         # Add non-stationarity through a random walk of the true q values
