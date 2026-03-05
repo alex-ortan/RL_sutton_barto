@@ -1,18 +1,30 @@
 import numpy as np
 
+from typing import Protocol
 from typing import Callable
 
 
+class Estimator(Protocol):
+    """This defines the 'Contract'."""
+    k: int
+    n: np.ndarray
+    q: np.ndarray
+    def update(self, action: int, reward: float) -> None: ...
 
-class SampleAverageEstimator:
-    """
+
+class SampleAverageEstimator(object):
+    """ 
     Keeps and updates estimates Q(a) for all arms a of a k-armed bandit.
     """
 
     def __init__(self, k_arms=10, initial_q=0):
         self.k = k_arms
         self.n = np.zeros(k_arms)           # number of times each action was taken
-        self.q = np.full(k_arms, initial_q) # values estimates for each action
+        self.q = np.full(k_arms, initial_q, dtype=float) # values estimates for each action
+
+
+    def reset():
+        self.__init__()
 
 
     def update(self, a, r):
@@ -21,20 +33,22 @@ class SampleAverageEstimator:
         self.q[a] = self.q[a] + step_size*(r - self.q[a])
 
 
-
 class ConstantStepSizeEstimator:
     """
     Keeps and updates estimates Q(a) for all arms a of a k-armed bandit.
     """
 
-    def __init__(self, k_arms, initial_q=0, step_size = 0.1):
+    def __init__(self, k_arms, initial_q=0, step_size=0.1):
         self.k = k_arms
         self.n = np.zeros(k_arms)           # number of times each action was taken
         self.q = np.full(k_arms, initial_q) # values estimates for each action
         self.step_size = step_size          # step size for the update after n steps
 
 
+    def reset():
+        self.__init__()
+
+
     def update(self, a, r):
         self.n[a] += 1
         self.q[a] = self.q[a] + self.step_size*(r - self.q[a])
-

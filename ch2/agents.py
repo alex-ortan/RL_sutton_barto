@@ -1,6 +1,6 @@
 import numpy as np
 
-from estimators import SampleAverageEstimator, ConstantStepSizeEstimator
+from estimators import Estimator, SampleAverageEstimator, ConstantStepSizeEstimator
 
 
 class EpsilonGreedyAgent:
@@ -8,7 +8,7 @@ class EpsilonGreedyAgent:
     Implements the epsilon-greedy algorithm for k-armed bandits.
     """
 
-    def __init__(self, k_arms=10, epsilon=0.1, estimator=None):
+    def __init__(self, k_arms=10, epsilon=0.1, estimator: Estimator = None):
         """
         Initializes the agent.
         
@@ -20,8 +20,6 @@ class EpsilonGreedyAgent:
 
         self.k = k_arms
         self.epsilon = epsilon
-
-        # Initialize the estimator object
         self.estimator = estimator
 
     def select_action(self):
@@ -36,44 +34,41 @@ class EpsilonGreedyAgent:
         else:
             # Exploit: Choose a greedy action based on current q values, breaking ties randomly
             actions = np.flatnonzero(self.estimator.q == self.estimator.q.max())
-            action = np.random.choice(actions)
+            action = np.random.choice(actions).item()
             
         return action
 
 
-def bandit_epsilon_greedy_run(bandit, k, T, epsilon, estimator_class, step_size = None):
+    def update_estimates(self, action, reward):
+        """
+        Passes the update instruction to the underlying estimator.
+        """
+        self.estimator.update(action, reward)
+
+
+def bandit_agent_run(bandit, agent, n_steps):
     """ 
-    Run the epsilon-greedy algorithm on a particular k-armed bandit for T time steps.
+    Run an agent on a k-armed bandit for n_steps time steps.
 
     Args:
-        bandit: bandit reward function; bandit(a) returns a real number for every possible action a.
-        k: number of arms in the bandit
-        T: number of time steps played
-        epsilon: probability with which an exploratory action is taken
-        estimator_name: name of the method used for estimating q values. "SampleAverage" or "ConstantStepSize"
-        step_size: the size of the step for the ConstantStepSize estimator
+        bandit: bandit environment with a reward() method that returns a real number for every possible action a.
+        agent: a class with a select_action method that decides on the next move
+        n_steps: number of time steps played
     """
 
-    # Initialize estimator and agent
-    if step_size:
-        estimator = estimator_class(k, step_size)
-    else:
-        estimator = estimator_class(k)
-    agent = EpsilonGreedyAgent(k, epsilon, estimator)
-
-    actions = []                 # sequence of actions taken (T,)
-    rewards = []                 # sequence of rewards received (T,)
+    actions = []                 # sequence of actions taken (n_steps,)
+    rewards = []                 # sequence of rewards received (n_steps,)
     
-    for t in range(0,T):
+    for t in range(0,n_steps):
         # Determine action to take
         a = agent.select_action()
         actions.append(a)
         
         # Determine reward for the chosen action
-        r = bandit(a)
+        r = bandit.reward(a)
         rewards.append(r)
         
         # Update value estimates
-        estimator.update(a, r)
+        agent.update_estimates(a, r)
 
     return rewards, actions
