@@ -10,16 +10,11 @@ class Bandit:
     Defines the bandit environment
     """
 
-    def __init__(self, 
-                 k, 
-                 q_true_mean = 0, 
-                 q_true_var = 1, 
-                 q_var = 1,
-                 drift_var = 0.0):
+    def __init__(self, k, q_true_mean=0, q_true_var=1, q_var=1, drift_var=0.0):
         """
         k-armed bandit, where the rewards from each arm are normally distributed, with random means and variance 1.
         The mean rewards for each arm themselves are drawn from a normal distribution with mean 0 and variance 1.
-    
+
         Args:
             k: number of arms in the bandit
             q_true_mean: mean of the q_true values for each of the k arms
@@ -33,18 +28,16 @@ class Bandit:
         self._drift_var = drift_var
 
         self._q_true = Rng.normal(q_true_mean, q_true_var, k)
-        self._q_var = [q_var]*k
+        self._q_var = [q_var] * k
         self._best_action = np.argmax(self._q_true)
 
-
-    def sample(self, action, n = 1):
+    def sample(self, action, n=1):
         """
         Provides a way to sample multiple reward values from the bandit distribution at a given point in time.
         This is useful in non-stationary scenarios where calling self.reward() also changes the distribution.
         """
-        
-        return Rng.normal(self._q_true[action], self._q_var[action], n)
 
+        return Rng.normal(self._q_true[action], self._q_var[action], n)
 
     def reward(self, action):
         """
