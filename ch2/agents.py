@@ -32,7 +32,7 @@ class EpsilonGreedyAgent:
 
         if self.rng.random() < self.epsilon:
             # Explore: Choose a random action
-            action = self.rng.integers(self.k)
+            action = self.rng.integers(self.k).item()
         else:
             # Exploit: Choose a greedy action based on current q values, breaking ties randomly
             actions = np.flatnonzero(self.estimator.q == self.estimator.q.max())
