@@ -50,5 +50,6 @@ class Bandit:
 
         # Add non-stationarity through a random walk of the true q values
         self._q_true += self.rng.normal(0, self._drift_var, self.k)
+        self._best_action = np.argmax(self._q_true)
 
         return r

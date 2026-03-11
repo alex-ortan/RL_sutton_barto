@@ -18,13 +18,15 @@ def bandit_agent_run(bandit, agent, n_steps):
         n_steps: number of time steps played
     """
 
-    actions = []  # sequence of actions taken (n_steps,)
-    rewards = []  # sequence of rewards received (n_steps,)
+    optimal_actions = []    # sequence of optimal action indicators (n_steps,)
+    rewards = []            # sequence of rewards received (n_steps,)
 
     for t in range(0, n_steps):
         # Determine action to take
         a = agent.select_action()
-        actions.append(a)
+
+        # Record whether action was optimal for benchmarking purposes
+        optimal_actions.append(a == bandit._best_action)
 
         # Determine reward for the chosen action
         r = bandit.reward(a)
@@ -33,7 +35,7 @@ def bandit_agent_run(bandit, agent, n_steps):
         # Update value estimates
         agent.update(a, r)
 
-    return rewards, actions
+    return rewards, optimal_actions
 
 
 def run_simulation(epsilon, T, k, bandit_args, estimator_class, seed):
@@ -60,10 +62,7 @@ def run_simulation(epsilon, T, k, bandit_args, estimator_class, seed):
     agent = EpsilonGreedyAgent(k, epsilon=epsilon, estimator=estimator, seed=seed)
 
     # Perform one run of the agent on the environment
-    rewards, actions = bandit_agent_run(bandit, agent, T)
-    
-    # Check which actions were optimal
-    optimal_actions = (actions == bandit_best_action)
+    rewards, optimal_actions = bandit_agent_run(bandit, agent, T)
 
     return rewards, optimal_actions
 
