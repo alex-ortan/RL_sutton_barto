@@ -1,4 +1,3 @@
-import multiprocessing
 import numpy as np
 
 from concurrent.futures import ProcessPoolExecutor
@@ -26,7 +25,7 @@ def bandit_agent_run(bandit, agent, n_steps):
         a = agent.select_action()
 
         # Record whether action was optimal for benchmarking purposes
-        optimal_actions.append(a == bandit._best_action())
+        optimal_actions.append(a == bandit._best_action)
 
         # Determine reward for the chosen action
         r = bandit.reward(a)

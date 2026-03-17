@@ -27,6 +27,7 @@ class Bandit:
         self._q_true = self.rng.normal(q_true_mean, q_true_var, k)
         self._q_var = [q_var] * k
 
+    @property
     def _best_action(self):
         """
         Observe best action given current _q_true values
