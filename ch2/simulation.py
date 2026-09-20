@@ -125,12 +125,13 @@ def run_experiment_parallel(R, epsilon, T, k, estimator_class=SampleAverageEstim
     """
 
     # Get optional bandit and algorithm args from kwargs
-    bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "drift_var"]}
+    bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "q_var", "drift_var"]}
 
     all_rewards = np.zeros((R, T))
     all_optimal_actions = np.zeros((R, T))
 
     with ProcessPoolExecutor() as executor:
+        # Pass round number r as seed in run_simulation to ensure experiment is repeatable but each run is still different
         rounds = [executor.submit(run_simulation, epsilon, T, k, bandit_args, estimator_class, r) for r in range(R)]
 
     for r in range(R):

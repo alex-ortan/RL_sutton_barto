@@ -1,0 +1,41 @@
+\documentclass{beamer}
+\usetheme{moloch}
+\usepackage{amsmath}
+\usepackage{cancel, mathtools}
+
+\usepackage[mathcal]{euscript}
+\usefonttheme[onlymath]{serif}
+
+% Add \strut to block titles so they are always the same height regardless of contents
+\addtobeamertemplate{block begin}{%
+    \let\oldinsertblocktitle\insertblocktitle%
+    \def\insertblocktitle{\strut\oldinsertblocktitle}%
+}{}
+
+% Beamer-ize cancelto command
+\makeatletter
+\let\my@cancelto\cancelto %copy over the original cancelto command
+\newcommand<>{\cancelto}[2]{\alt#3{\my@cancelto{#1}{#2}}{\mathrlap{#2}\phantom{\my@cancelto{#1}{#2}}}}
+% redefine the cancelto command, using \phantom to assure that the
+% result doesn't wiggle up and down with and without the arrow
+\makeatother
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{angles, quotes}
+
+
+
+
+
+\title{Reinforcement Learning - Sutton and Barto}
+\subtitle{Book Club Highlights}
+\author{Alexandra Ortan}
+\date{\today}
+
+
+
+
