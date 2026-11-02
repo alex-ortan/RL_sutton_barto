@@ -24,7 +24,7 @@ class EpsilonGreedyAgent:
         self.estimator = estimator
         self.rng = np.random.default_rng(seed)
 
-    def select_action(self):
+    def select_action(self, t):
         """
         Chooses an action based on the epsilon-greedy strategy.
         It uses the Q values stored in the estimator.

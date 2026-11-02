@@ -22,7 +22,7 @@ def bandit_agent_run(bandit, agent, n_steps):
 
     for t in range(0, n_steps):
         # Determine action to take
-        a = agent.select_action()
+        a = agent.select_action(t)
 
         # Record whether action was optimal for benchmarking purposes
         optimal_actions.append(a == bandit._best_action)
@@ -37,7 +37,7 @@ def bandit_agent_run(bandit, agent, n_steps):
     return rewards, optimal_actions
 
 
-def run_simulation(epsilon, T, k, bandit_args, estimator_class, seed):
+def run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_class, agent_args, seed):
     """
     Run a single run of the epsilon-greedy algorithm on a k-armed bandit for T time steps.
 
@@ -54,10 +54,10 @@ def run_simulation(epsilon, T, k, bandit_args, estimator_class, seed):
     bandit_args["seed"] = seed
     bandit = Bandit(k, **bandit_args)
 
-    estimator = estimator_class(k)
+    estimator = estimator_class(k, **estimator_args)
 
     # Initialize agent
-    agent = EpsilonGreedyAgent(k, epsilon=epsilon, estimator=estimator, seed=seed)
+    agent = agent_class(k, estimator=estimator, seed=seed, **agent_args)
 
     # Perform one run of the agent on the environment
     rewards, optimal_actions = bandit_agent_run(bandit, agent, T)
@@ -65,33 +65,42 @@ def run_simulation(epsilon, T, k, bandit_args, estimator_class, seed):
     return rewards, optimal_actions
 
 
-def run_experiment(R, epsilon, T, k, estimator_class=SampleAverageEstimator, **kwargs):
+def run_experiment(R, T, k, estimator_class=SampleAverageEstimator, agent_class=EpsilonGreedyAgent, **kwargs):
     """
     Run R runs of the epsilon-greedy algorithm on R different k-armed bandits for T time steps, and average the rewards from all runs for each time step.
 
     Args:
         R: number of runs
-        epsilon: probability with which an exploratory action is taken
         T: number of timesteps played
         k: number of arms in the bandit
         estimator_class: SampleAverageEstimator or ConstantStepSizeEstimator
+        agent_class: EpsilonGreedyAgent or UCBAgent
 
     OptionalArgs:
         q_true_mean: mean of the q_true values for each of the k arms
         q_true_var: variance of the q_true values each of the k arms
         drift_var: if the bandit is non stationary, the q_true values take a random walk with variance drift_var and mean 0 at every step
+        initial_q: initial estimate for the estimators
+        epsilon: probability with which an exploratory action is taken
+        c: exploration constant for UCB
 
     """
 
     # Get optional bandit and algorithm args from kwargs
     bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "drift_var"]}
 
+    # Get optional estimator args from kwargs
+    estimator_args = {k: kwargs[k] for k in kwargs.keys() & ["initial_q"]}
+
+    # Get optional agent args from kwargs
+    agent_args = {k: kwargs[k] for k in kwargs.keys() & ["epsilon", "c"]}
+
     all_rewards = np.zeros((R, T))
     all_optimal_actions = np.zeros((R, T))
 
     for r in range(R):
         # Perform one run of the agent on the environment
-        rewards, optimal_actions = run_simulation(epsilon, T, k, bandit_args, estimator_class, seed=r)
+        rewards, optimal_actions = run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_class, agent_args, seed=r)
 
         all_rewards[r, :] = rewards
         all_optimal_actions[r, :] = optimal_actions
@@ -106,33 +115,42 @@ def run_experiment(R, epsilon, T, k, estimator_class=SampleAverageEstimator, **k
     return average_rewards, percent_optimal_actions
 
 
-def run_experiment_parallel(R, epsilon, T, k, estimator_class=SampleAverageEstimator, **kwargs):
+def run_experiment_parallel(R, T, k, estimator_class=SampleAverageEstimator, agent_class=EpsilonGreedyAgent, **kwargs):
     """
     Run R runs of the epsilon-greedy algorithm on R different k-armed bandits for T time steps, and average the rewards from all runs for each time step.
 
     Args:
         R: number of runs
-        epsilon: probability with which an exploratory action is taken
         T: number of timesteps played
         k: number of arms in the bandit
         estimator_class: SampleAverageEstimator or ConstantStepSizeEstimator
+        agent_class: EpsilonGreedyAgent or UCBAgent
 
     OptionalArgs:
         q_true_mean: mean of the q_true values for each of the k arms
         q_true_var: variance of the q_true values each of the k arms
         drift_var: if the bandit is non stationary, the q_true values take a random walk with variance drift_var and mean 0 at every step
+        initial_q: initial estimate for the estimators
+        epsilon: probability with which an exploratory action is taken
+        c: exploration constant for UCB
 
     """
 
     # Get optional bandit and algorithm args from kwargs
     bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "q_var", "drift_var"]}
 
+    # Get optional estimator args from kwargs
+    estimator_args = {k: kwargs[k] for k in kwargs.keys() & ["initial_q"]}
+
+    # Get optional agent args from kwargs
+    agent_args = {k: kwargs[k] for k in kwargs.keys() & ["epsilon", "c"]}
+
     all_rewards = np.zeros((R, T))
     all_optimal_actions = np.zeros((R, T))
 
     with ProcessPoolExecutor() as executor:
         # Pass round number r as seed in run_simulation to ensure experiment is repeatable but each run is still different
-        rounds = [executor.submit(run_simulation, epsilon, T, k, bandit_args, estimator_class, r) for r in range(R)]
+        rounds = [executor.submit(run_simulation,T, k, bandit_args, estimator_class, estimator_args, agent_class, agent_args,  r) for r in range(R)]
 
     for r in range(R):
         # Output returned in the order assigned
