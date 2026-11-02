@@ -45,3 +45,53 @@ class EpsilonGreedyAgent:
         Passes the update instruction to the underlying estimator.
         """
         self.estimator.update(action, reward)
+
+
+class UCBAgent:
+    """
+    Implements Upper-Confidence-Bound algorithm for k-armed bandits.
+    """
+
+    def __init__(self, k_arms=10, *, c=1, estimator: Estimator = None, seed=42):
+        """
+        Initializes the agent.
+
+        Args:
+            k_arms: number of arms in the bandit
+            c: degree of exploration
+            estimator: Initialized estimator class used to estimate values (e.g., SampleAverageEstimator).
+            seed: seed for random number generator
+        """
+
+        self.k = k_arms
+        self.c = c
+        self.estimator = estimator
+        self.rng = np.random.default_rng(seed)
+
+    def select_action(self, t):
+        """
+        Chooses an action using the upper-confidence-bound strategy.
+        It uses the Q values stored in the estimator.
+        """
+
+        unexplored_actions = np.flatnonzero(self.estimator.n == 0)
+        if len(unexplored_actions) > 0:
+            # Explore: If some actions have not been chosen yet, choose one of them at random
+            action = self.rng.choice(unexplored_actions).item()
+        else:
+            # Exploit: Choose a greedy action based on current q values and uncertainty
+
+            # Define preference function as value estimate plus an uncertainty term
+            pref = self.estimator.q + self.c*np.sqrt(np.log(t)/self.estimator.n)
+
+            # Choose action that maximizes preference function, breaking ties randomly
+            actions = np.flatnonzero(pref == pref.max())
+            action = self.rng.choice(actions).item()
+
+        return action
+
+    def update(self, action, reward):
+        """
+        Passes the update instruction to the underlying estimator.
+        """
+        self.estimator.update(action, reward)
