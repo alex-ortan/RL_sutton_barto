@@ -22,7 +22,7 @@ def bandit_agent_run(bandit, agent, n_steps):
 
     for t in range(0, n_steps):
         # Determine action to take
-        a = agent.select_action(t)
+        a = agent.select_action()
 
         # Record whether action was optimal for benchmarking purposes
         optimal_actions.append(a == bandit._best_action)
@@ -54,10 +54,13 @@ def run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_cla
     bandit_args["seed"] = seed
     bandit = Bandit(k, **bandit_args)
 
-    estimator = estimator_class(k, **estimator_args)
+    # Initialize estimator if a class is provided
+    if estimator_class:
+        estimator = estimator_class(k, **estimator_args)
+        agent_args["estimator"] = estimator
 
     # Initialize agent
-    agent = agent_class(k, estimator=estimator, seed=seed, **agent_args)
+    agent = agent_class(k, seed=seed, **agent_args)
 
     # Perform one run of the agent on the environment
     rewards, optimal_actions = bandit_agent_run(bandit, agent, T)
