@@ -115,7 +115,8 @@ def run_experiment(R, T, k, estimator_class=SampleAverageEstimator, agent_class=
     # Calculate percent optimal actions across all runs
     percent_optimal_actions = number_optimal_actions * 100 / R
 
-    return average_rewards, percent_optimal_actions
+    return {"average_rewards": average_rewards,
+            "percent_optimal_actions": percent_optimal_actions}
 
 
 def run_experiment_parallel(R, T, k, estimator_class=SampleAverageEstimator, agent_class=EpsilonGreedyAgent, **kwargs):
@@ -169,4 +170,5 @@ def run_experiment_parallel(R, T, k, estimator_class=SampleAverageEstimator, age
     # Calculate percent optimal actions across all runs
     percent_optimal_actions = number_optimal_actions * 100 / R
 
-    return average_rewards, percent_optimal_actions
+    return {"average_rewards": average_rewards,
+            "percent_optimal_actions": percent_optimal_actions}
