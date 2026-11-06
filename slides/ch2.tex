@@ -99,3 +99,136 @@
 \end{columns}
 \end{frame}
 
+
+\begin{frame}{Constant Step-size Estimator and Optimistic Initial Values}
+\begin{columns}
+
+    \begin{column}{0.5\textwidth}
+        \begin{block}{Experiment}
+        \begin{itemize}[label=$\rightarrow$]
+            \item stationary 10-arm agent
+            \item constant step-size value estimator w/ $\alpha=0.1$
+            \item $\epsilon$-greedy agent
+            \item \% optimal action averaged over 2000 bandits
+        \end{itemize}
+        \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig2-3.png}
+    \end{column}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Constant Step-size Estimator and Optimistic Initial Values}
+\begin{columns}
+
+    \begin{column}{0.5\textwidth}
+        \begin{block}{Observations}
+        \footnotesize
+        \begin{itemize}[label=$\rightarrow$]
+            \item Constant step-size estimator climbs pretty slowly - more than using a sample average estimator. 
+                This is because it doesn't efficiently use the information from all samples for a stationary problem.
+            \item Optimistic initial values encourage a lot of early exploration - more than $\epsilon > 0$.
+            \item Note that using optimistic values witfrom agents import EpsilonGreedyAgent, UCBAgent, GradientBanditAgenth $\epsilon = 0$ would be counterproductive, as the two 
+                mechanisms would work against each other in the early steps.
+        \end{itemize}
+        \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig2-3.png}
+    \end{column}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Upper-Confidence-Bound Action Selection (UCB)}
+\begin{columns}
+
+    \begin{column}{0.5\textwidth}
+        \begin{block}{Experiment}
+        \begin{itemize}[label=$\rightarrow$]
+            \item stationary 10-arm agent
+            \item sample average estimator
+            \item UCB agent
+            \item reward averaged over 2000 bandits
+        \end{itemize}
+        \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig2-4.png}
+    \end{column}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Non-Stationary 10-armed Testbed}
+\begin{columns}
+
+    \begin{column}{0.5\textwidth}
+    \begin{block}{Experimental setup}
+    \begin{itemize}[label=$\rightarrow$]
+        \item 2000 randomly generated 10-arm bandits
+        \item $d_k \sim \mathcal{N}(0,1)$
+        \item $q_{*,t}(a) \sim \mathcal{N}(\sum_{k=1}^t d_k,0)$
+        \item $R(a) \sim \mathcal{}(q_*(a),1)$
+    \end{itemize}
+    \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig2-ns.png}
+    \end{column}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Summary}
+
+    \begin{columns}[T]
+
+    \begin{column}{0.33\textwidth}
+    \begin{block}{Environments}
+    \begin{enumerate}[leftmargin=*]
+        \item<1,3-4> Stationary k-armed Bandit
+        \item<2> Non-Stationary\\ k-armed Bandit
+    \end{enumerate}
+    \end{block}
+    \end{column}
+
+    \begin{column}{0.33\textwidth}
+    \begin{block}{Estimators}
+    \begin{enumerate}[leftmargin=*]
+        \item<1,4> Sample-Average
+        \item<2> Constant Step-Size
+        \item<3> Constant Step-Size with Optimistic Initial Values
+    \end{enumerate}
+    \end{block}
+    \end{column}
+
+    \begin{column}{0.33\textwidth}
+    \begin{block}{Agents}
+    \begin{enumerate}[leftmargin=*]
+        \item<1-3> Greedy
+        \item<1-3> $\epsilon$-Greedy
+        \item<4> UCB
+        \item<5> Gradient Bandit
+    \end{enumerate}
+    \end{block}
+    \end{column}
+
+
+\end{columns}
+
+\end{frame}
