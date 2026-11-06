@@ -2,7 +2,7 @@ import numpy as np
 
 from concurrent.futures import ProcessPoolExecutor
 
-from agents import EpsilonGreedyAgent
+from agents import EpsilonGreedyAgent, UCBAgent
 from bandit import Bandit
 from estimators import SampleAverageEstimator
 
@@ -49,6 +49,12 @@ def run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_cla
         estimator_class: SampleAverageEstimator or ConstantStepSizeEstimator
         seed: seed for random number generators in both bandit and agent
     """
+
+    # Select appropriate agent arguments depending on the agent class, if known:
+    if agent_class == EpsilonGreedyAgent:
+        agent_args = {k: agent_args[k] for k in agent_args.keys() & ["epsilon"]}
+    elif agent_class == UCBAgent:
+        agent_args = {k: agent_args[k] for k in agent_args.keys() & ["c"]}
 
     # Initialize environment
     bandit_args["seed"] = seed
