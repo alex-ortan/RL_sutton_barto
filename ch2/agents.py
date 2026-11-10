@@ -109,7 +109,7 @@ class GradientBanditAgent:
     Implements Gradient Bandit algorithm for k-armed bandits.
     """
 
-    def __init__(self, k_arms=10, *, alpha=0.1, seed=42):
+    def __init__(self, k_arms=10, *, baseline=True, alpha=0.1, seed=42):
         """
         Initializes the agent.
 
@@ -118,7 +118,8 @@ class GradientBanditAgent:
             alpha: step size parameter
             h: preference of each action
             p: action probability distribution
-            r: average reward
+            baseline: whether or not to use a baseline reward
+            r: average reward (used as baseline)
             t: current time step
             seed: seed for random number generator
         """
@@ -127,6 +128,7 @@ class GradientBanditAgent:
         self.alpha = alpha
         self.h = np.zeros(k_arms)          # initially all actions have equal preference
         self.p = softmax(self.h)
+        self.baseline = baseline
         self.r = 0.0
         self.t = 1
         self.rng = np.random.default_rng(seed)
@@ -147,11 +149,16 @@ class GradientBanditAgent:
         # Update average reward
         self.r = self.r + 1.0 / self.t * (reward - self.r)
 
+        if self.baseline:
+            baseline = self.r
+        else:
+            baseline = 0.0
+
         for a in range(0, self.k):
             if a == action:
-                self.h[a] += self.alpha * (reward - self.r) * (1 - self.p[a])
+                self.h[a] += self.alpha * (reward - baseline) * (1 - self.p[a])
             else:
-                self.h[a] += - self.alpha * (reward - self.r) * self.p[a]
+                self.h[a] += - self.alpha * (reward - baseline) * self.p[a]
 
         # Update action probabilities based on preference
         self.p = softmax(self.h)

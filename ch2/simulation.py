@@ -2,7 +2,7 @@ import numpy as np
 
 from concurrent.futures import ProcessPoolExecutor
 
-from agents import EpsilonGreedyAgent, UCBAgent
+from agents import EpsilonGreedyAgent, UCBAgent, GradientBanditAgent
 from bandit import Bandit
 from estimators import SampleAverageEstimator
 
@@ -37,7 +37,7 @@ def bandit_agent_run(bandit, agent, n_steps):
     return rewards, optimal_actions
 
 
-def run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_class, agent_args, seed):
+def run_simulation(T, k, estimator_class, agent_class, seed, **kwargs):
     """
     Run a single run of the epsilon-greedy algorithm on a k-armed bandit for T time steps.
 
@@ -50,11 +50,19 @@ def run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_cla
         seed: seed for random number generators in both bandit and agent
     """
 
+    # Get optional bandit and algorithm args from kwargs
+    bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "q_var", "drift_var"]}
+
+    # Get optional estimator args from kwargs
+    estimator_args = {k: kwargs[k] for k in kwargs.keys() & ["initial_q", "step_size"]}
+
     # Select appropriate agent arguments depending on the agent class, if known:
     if agent_class == EpsilonGreedyAgent:
-        agent_args = {k: agent_args[k] for k in agent_args.keys() & ["epsilon"]}
+        agent_args = {k: kwargs[k] for k in kwargs.keys() & ["epsilon"]}
     elif agent_class == UCBAgent:
-        agent_args = {k: agent_args[k] for k in agent_args.keys() & ["c"]}
+        agent_args = {k: kwargs[k] for k in kwargs.keys() & ["c"]}
+    elif agent_class == GradientBanditAgent:
+        agent_args = {k: kwargs[k] for k in kwargs.keys() & ["alpha", "baseline"]}
 
     # Initialize environment
     bandit_args["seed"] = seed
@@ -94,22 +102,12 @@ def run_experiment(R, T, k, estimator_class=SampleAverageEstimator, agent_class=
         c: exploration constant for UCB
 
     """
-
-    # Get optional bandit and algorithm args from kwargs
-    bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "drift_var"]}
-
-    # Get optional estimator args from kwargs
-    estimator_args = {k: kwargs[k] for k in kwargs.keys() & ["initial_q"]}
-
-    # Get optional agent args from kwargs
-    agent_args = {k: kwargs[k] for k in kwargs.keys() & ["epsilon", "c"]}
-
     all_rewards = np.zeros((R, T))
     all_optimal_actions = np.zeros((R, T))
 
     for r in range(R):
         # Perform one run of the agent on the environment
-        rewards, optimal_actions = run_simulation(T, k, bandit_args, estimator_class, estimator_args, agent_class, agent_args, seed=r)
+        rewards, optimal_actions = run_simulation(T, k, estimator_class, agent_class, seed=r, **kwargs)
 
         all_rewards[r, :] = rewards
         all_optimal_actions[r, :] = optimal_actions
@@ -146,21 +144,12 @@ def run_experiment_parallel(R, T, k, estimator_class=SampleAverageEstimator, age
 
     """
 
-    # Get optional bandit and algorithm args from kwargs
-    bandit_args = {k: kwargs[k] for k in kwargs.keys() & ["q_true_mean", "q_true_var", "q_var", "drift_var"]}
-
-    # Get optional estimator args from kwargs
-    estimator_args = {k: kwargs[k] for k in kwargs.keys() & ["initial_q"]}
-
-    # Get optional agent args from kwargs
-    agent_args = {k: kwargs[k] for k in kwargs.keys() & ["epsilon", "c"]}
-
     all_rewards = np.zeros((R, T))
     all_optimal_actions = np.zeros((R, T))
 
     with ProcessPoolExecutor() as executor:
         # Pass round number r as seed in run_simulation to ensure experiment is repeatable but each run is still different
-        rounds = [executor.submit(run_simulation,T, k, bandit_args, estimator_class, estimator_args, agent_class, agent_args,  r) for r in range(R)]
+        rounds = [executor.submit(run_simulation, T, k, estimator_class, agent_class, seed=r, **kwargs) for r in range(R)]
 
     for r in range(R):
         # Output returned in the order assigned
