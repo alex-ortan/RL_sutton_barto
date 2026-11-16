@@ -289,6 +289,54 @@
 
 
 \begin{frame}{Summary}
+\begin{columns}
+
+    \begin{column}{0.5\textwidth}
+        \begin{block}{Stationary Bandit}
+        \begin{itemize}[label=$\rightarrow$]
+            \item $q_*(a) \sim \mathcal{N}(0,1)$
+            \item $R(a) \sim \mathcal{}(q_*(a),1)$
+            \item reward averaged over 2k bandits \& 1k steps
+            \item methods not overly sensitive to parameter value
+            \item best method seems to be UCB
+        \end{itemize}
+        \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+            \includegraphics[width=\textwidth]{figures/fig2-6.png}
+    \end{column}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Summary}
+\begin{columns}
+
+    \begin{column}{0.5\textwidth}
+        \begin{block}{Non-Stationary Bandit}
+        \begin{itemize}[label=$\rightarrow$]
+            \item $d_k \sim \mathcal{N}(0,1)$
+            \item $q_{*,t}(a) \sim \mathcal{N}(\sum_{k=1}^t d_k,0)$
+            \item $R(a) \sim \mathcal{}(q_*(a),1)$
+            \item reward averaged over 2k bandits \& last 100k of 200k steps
+            \item
+        \end{itemize}
+        \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+            \includegraphics[width=\textwidth]{figures/fig2-6-ns.png}
+    \end{column}
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Summary}
 
     \begin{columns}[T]
 

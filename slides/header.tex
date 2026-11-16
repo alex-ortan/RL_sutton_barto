@@ -6,6 +6,10 @@
 \usepackage[mathcal]{euscript}
 \usefonttheme[onlymath]{serif}
 
+
+% Section title slides: print the section name as plain text, not as a link
+\addtobeamertemplate{section page}{\let\insertsectionhead\secname}{}
+
 % Add \strut to block titles so they are always the same height regardless of contents
 \addtobeamertemplate{block begin}{%
     \let\oldinsertblocktitle\insertblocktitle%
