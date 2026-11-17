@@ -6,8 +6,10 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "matplotlib>=3.10.7",
+    "numba>=0.68.0",
     "numpy>=2.3.4",
     "pandas",
     "scikit-learn",
     "scipy",
+    "seaborn>=0.13.2",
 ]
